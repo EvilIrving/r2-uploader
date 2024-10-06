@@ -1,4 +1,4 @@
-module.exports = async (req, res) => {
+export default async function (req, res) {
   const { method, body } = req;
   const API_TOKEN = process.env.CLOUDFLARE_API_TOKEN;
   const ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
@@ -26,4 +26,4 @@ module.exports = async (req, res) => {
       error: "An error occurred while proxying the request to Cloudflare",
     });
   }
-};
+}
