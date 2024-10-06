@@ -11,20 +11,11 @@ export const useCloudflareConfigStore = defineStore("cloudflareConfig", {
   actions: {
     async queryDatabase(sql, params) {
       try {
-        const response = await fetch("/api/cloudflare-proxy", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ sql, params }),
+        const response = await axios.post("/api/cloudflare_proxy", {
+          sql,
+          params,
         });
-
-        if (!response.ok) {
-          throw new Error(`Error querying database: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        return data;
+        return response.data;
       } catch (error) {
         console.error("Error querying database:", error);
         throw error;
