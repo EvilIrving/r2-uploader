@@ -866,11 +866,11 @@ function uploadFile(file) {
 
       // 插入 D1 
       // 生成文件URL（这里假设URL的格式，您需要根据实际情况调整）
-      const r2Url = cloudflareStore.R2_URL(file.name)
+      const r2Url = cloudflareStore.R2_URL(fileName)
 
       // 向数据库添加文件记录
       try {
-        await addFileToDatabase(r2Url, file.name);
+        await addFileToDatabase(r2Url, fileName);
         console.log('File record added to database successfully');
       } catch (dbError) {
         console.error('Failed to add file record to database:', dbError);
