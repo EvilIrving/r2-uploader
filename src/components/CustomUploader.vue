@@ -190,26 +190,16 @@ import { nanoid } from 'nanoid'
 import Compressor from 'compressorjs'
 
 const cloudflareConfig = useCloudflareConfigStore()
-// 创建用于数据库操作的 axios 实例
-const dbApi = axios.create({
-  baseURL: cloudflareConfig.API_BASE_URL,
-  headers: {
-    'Authorization': `Bearer ${cloudflareConfig.API_TOKEN}`,
-    'Content-Type': 'application/json'
-  }
-})
+
 // 向数据库添加文件记录的函数
 let addFileToDatabase = async (url, name) => {
   try {
-    const response = await dbApi.post('/query', {
-      sql: 'INSERT INTO photos (name, url, isUsed) VALUES (?, ?, false)',
-      params: [url, name]
-    })
-    console.log('File added to database:', response.data)
-    return response.data
+    const result = await cloudflareStore.queryDatabase('INSERT INTO photos (name, url, isUsed) VALUES (?, ?, false)', [name, url]);
+    console.log('File added to database:', result)
+    return result
   } catch (error) {
-    console.error('Error adding file to database:', error.response ? error.response.data : error.message)
-    throw error
+    console.error('Error deleting file record from database:', error);
+    throw error;
   }
 }
 
@@ -880,7 +870,7 @@ function uploadFile(file) {
 
       // 向数据库添加文件记录
       try {
-        await addFileToDatabase(r2Url, file.name, file.key);
+        await addFileToDatabase(r2Url, file.name);
         console.log('File record added to database successfully');
       } catch (dbError) {
         console.error('Failed to add file record to database:', dbError);
