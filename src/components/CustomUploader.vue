@@ -185,7 +185,7 @@
 import { onMounted, reactive, ref, watch } from 'vue'
 import axios from 'axios'
 import { useStatusStore } from '../store/status'
-import { useCloudflareConfigStore } from '../store/cloudflareConfigStore'
+import { useCloudflareConfigStore } from '../store/d1'
 import { nanoid } from 'nanoid'
 import Compressor from 'compressorjs'
 
