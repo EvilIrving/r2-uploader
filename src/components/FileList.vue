@@ -459,6 +459,9 @@ let deleteThisFile = function (key, isBatchDelete = false, options = {}) {
     .then(async () => {
       deletingKey.value = ''
       fileList.value = fileList.value.filter((item) => item.key !== key)
+
+      // 删除 D1 目录下的文件
+      
       await mapFilesToDir()
 
       if (options.callback) {
