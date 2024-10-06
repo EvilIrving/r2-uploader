@@ -1,5 +1,3 @@
-import axios from "axios";
-
 module.exports = async (req, res) => {
   const { method, body } = req;
   const API_TOKEN = process.env.CLOUDFLARE_API_TOKEN;
@@ -8,17 +6,17 @@ module.exports = async (req, res) => {
   const API_BASE_URL = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/d1/database/${DATABASE_ID}`;
 
   try {
-    const response = await axios({
+    const response = await fetch(`${API_BASE_URL}/query`, {
       method: method,
-      url: `${API_BASE_URL}/query`,
       headers: {
         Authorization: `Bearer ${API_TOKEN}`,
         "Content-Type": "application/json",
       },
-      data: body,
+      body: JSON.stringify(body),
     });
 
-    res.status(response.status).json(response.data);
+    const data = await response.json();
+    res.status(response.status).json(data);
   } catch (error) {
     console.error(
       "Error proxying to Cloudflare:",
