@@ -864,7 +864,7 @@ function uploadFile(file) {
       })
     }
   })
-    .then((res) => {
+    .then(async (res) => {
       statusMap.value[file.key] = 'done'
       if (res.status === 200) {
         file.endUploadingTime = new Date().getTime()
