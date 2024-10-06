@@ -189,7 +189,7 @@ import { useCloudflareConfigStore } from '../store/d1'
 import { nanoid } from 'nanoid'
 import Compressor from 'compressorjs'
 
-const cloudflareConfig = useCloudflareConfigStore()
+const cloudflareStore = useCloudflareConfigStore()
 
 // 向数据库添加文件记录的函数
 let addFileToDatabase = async (url, name) => {
@@ -866,7 +866,7 @@ function uploadFile(file) {
 
       // 插入 D1 
       // 生成文件URL（这里假设URL的格式，您需要根据实际情况调整）
-      const r2Url = cloudflareConfig.R2_URL(file.name)
+      const r2Url = cloudflareStore.R2_URL(file.name)
 
       // 向数据库添加文件记录
       try {
