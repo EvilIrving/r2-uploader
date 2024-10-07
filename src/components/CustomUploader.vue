@@ -195,7 +195,6 @@ const cloudflareStore = useCloudflareConfigStore()
 let addFileToDatabase = async (url, name) => {
   try {
     const result = await cloudflareStore.queryDatabase('INSERT INTO photos (name, url, isUsed) VALUES (?, ?, false)', [name, url]);
-    console.log('File added to database:', result)
     return result
   } catch (error) {
     console.error('Error deleting file record from database:', error);
