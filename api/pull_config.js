@@ -35,12 +35,24 @@ export default async function (req, res) {
 
   let user_json = await user.json()
 
-  let {error, results} = await d1.query('select * from configs where username = ?', [user_json.login])
-
+  let {success, results, error} = await d1.query('select * from configs where username = ?', [user_json.login])
+  
   if (error) {
     return _res.json({
       error
     }, 500)
+  }
+
+  if(!success){
+    return _res.json({
+      message: error
+    }, 403)
+  }
+
+  if(!results.length){
+    return _res.json({
+      message: 'no_config'
+    }, 404)
   }
 
   return _res.json({

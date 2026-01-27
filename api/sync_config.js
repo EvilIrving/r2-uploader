@@ -43,38 +43,39 @@ export default async function (req) {
 
   let user_json = await user.json()
 
-  let { error, results } = await d1.query('select * from configs where username = ?', [user_json.login])
-
-  if (error) {
-    return _res.json(
-      {
-        error
-      },
-      500
+  try {
+    // First check if the user exists
+    const userExists = await d1.query(
+      'SELECT username FROM configs WHERE username = ?',
+      [user_json.login]
     )
-  }
-
-  if (results.length === 0) {
-    let {error} = await d1.query('insert into configs (username, config_text, updated_at, created_at) values (?, ?, ?, ?)', [
-      user_json.login,
-      config,
-      Date.now(),
-      Date.now()
-    ])
-
-    if(error){
-      return _res.json({
-        message: 'd1_error',
-        detail: error
-      }, 500)
+    
+    let res;
+    if (userExists.results && userExists.results.length > 0) {
+      // Update existing user
+      res = await d1.query(
+        'UPDATE configs SET config_text = ?, updated_at = ? WHERE username = ?',
+        [config, Date.now(), user_json.login]
+      )
+    } else {
+      // Insert new user
+      res = await d1.query(
+        'INSERT INTO configs (username, config_text, updated_at, created_at) VALUES (?, ?, ?, ?)',
+        [user_json.login, config, Date.now(), Date.now()]
+      )
     }
 
-    return _res.json({
-      message: 'success'
-    })
-  }
+    if(res.message && res.message.startsWith('D1_ERROR:')){
+      throw new Error(res.message)
+    }
 
-  return _res.json({
-    message: 'success'
-  })
+    console.log('d1 res:', res)
+    return _res.json(res)
+  } catch (error) {
+    console.log('error', error)
+    return _res.json({
+      message: 'd1_error',
+      detail: error.message
+    }, 500)
+  }  
 }
